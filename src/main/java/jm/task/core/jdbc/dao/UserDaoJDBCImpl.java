@@ -1,7 +1,6 @@
 package jm.task.core.jdbc.dao;
 
 import jm.task.core.jdbc.model.User;
-import jm.task.core.jdbc.util.Util;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -11,8 +10,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserDaoJDBCImpl implements UserDao {
-    public UserDaoJDBCImpl() {
+    private Connection connection;
 
+    public UserDaoJDBCImpl() {
+    }
+
+    public UserDaoJDBCImpl(Connection connection) {
+        this.connection = connection;
     }
 
     public void createUsersTable() {
@@ -23,50 +27,30 @@ public class UserDaoJDBCImpl implements UserDao {
                 "    last_name VARCHAR(20)," +
                 "    age TINYINT" +
                 ");";
-        try (Connection connection = new Util().getMyConnection()) {
-            Statement statement = connection.createStatement();
-            statement.executeUpdate(sqlCreateTable);
-        } catch (ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
-        }
+        sendQueryOnUpdate(sqlCreateTable);
     }
 
     public void dropUsersTable() {
         final String sqlCreateTable = "DROP TABLE IF EXISTS USERS;";
-        try (Connection connection = new Util().getMyConnection()) {
-            Statement statement = connection.createStatement();
-            statement.executeUpdate(sqlCreateTable);
-        } catch (ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
-        }
+        sendQueryOnUpdate(sqlCreateTable);
     }
 
     public void saveUser(String name, String lastName, byte age) {
         final String sqlInsertUser = String.format("INSERT into USERS (name, last_name, age) values ('%s', '%s', %d)",
                 name, lastName, age);
-        try (Connection connection = new Util().getMyConnection()) {
-            Statement statement = connection.createStatement();
-            statement.executeUpdate(sqlInsertUser);
-        } catch (ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
-        }
+        sendQueryOnUpdate(sqlInsertUser);
     }
 
     public void removeUserById(long id) {
         final String sqlRemoveUser = String.format("DELETE FROM USERS WHERE id = %d", id);
-        try (Connection connection = new Util().getMyConnection()) {
-            Statement statement = connection.createStatement();
-            statement.executeUpdate(sqlRemoveUser);
-        } catch (ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
-        }
+        sendQueryOnUpdate(sqlRemoveUser);
     }
 
     public List<User> getAllUsers() {
-        final String sqlGetAllUsers = String.format("SELECT * FROM Users");
+        final String sqlGetAllUsers = "SELECT * FROM Users";
         List<User> list = new ArrayList<>();
         User user;
-        try (Connection connection = new Util().getMyConnection()) {
+        try {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sqlGetAllUsers);
             while (resultSet.next()) {
@@ -78,7 +62,7 @@ public class UserDaoJDBCImpl implements UserDao {
                 user.setId(resultSet.getLong("id"));
                 list.add(user);
             }
-        } catch (ClassNotFoundException | SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 
@@ -86,12 +70,15 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void cleanUsersTable() {
-        final String sqlRemoveAllUsers = String.format("DELETE FROM USERS");
-        try (Connection connection = new Util().getMyConnection()) {
-            Statement statement = connection.createStatement();
-            statement.executeUpdate(sqlRemoveAllUsers);
+        final String sqlRemoveAllUsers = "DELETE FROM USERS";
+        sendQueryOnUpdate(sqlRemoveAllUsers);
+    }
 
-        } catch (ClassNotFoundException | SQLException e) {
+    private void sendQueryOnUpdate(String sqlQuery) {
+        try {
+            Statement statement = connection.createStatement();
+            statement.executeUpdate(sqlQuery);
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
