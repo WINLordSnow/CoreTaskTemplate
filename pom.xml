@@ -47,6 +47,13 @@
             <artifactId>hibernate-core</artifactId>
             <version>4.3.10.Final</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-agroal</artifactId>
+            <version>5.4.30.Final</version>
+            <type>pom</type>
+        </dependency>
      </dependencies>
 
 </project>

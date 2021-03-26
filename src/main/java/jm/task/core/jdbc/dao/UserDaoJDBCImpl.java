@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserDaoJDBCImpl implements UserDao {
-    private final jm.task.core.jdbc.util.Util util = new Util();
 
     public UserDaoJDBCImpl() {
     }
@@ -47,7 +46,7 @@ public class UserDaoJDBCImpl implements UserDao {
         final String sqlGetAllUsers = String.format("SELECT * FROM USERS");
         List<User> list = new ArrayList<>();
         User user;
-        try (Connection connection = util.getMyConnection()) {
+        try (Connection connection = Util.getMyConnection()) {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sqlGetAllUsers);
 
@@ -73,7 +72,7 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     private void sendQueryOnUpdate(String sqlQuery) {
-        try (Connection connection = util.getMyConnection()) {
+        try (Connection connection = Util.getMyConnection()) {
             Statement statement = connection.createStatement();
             statement.executeUpdate(sqlQuery);
         } catch (SQLException | ClassNotFoundException e) {
