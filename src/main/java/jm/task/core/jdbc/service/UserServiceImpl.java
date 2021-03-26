@@ -12,13 +12,7 @@ public class UserServiceImpl implements UserService {
     private UserDao userDao;
 
     public UserServiceImpl() {
-        try {
-            userDao = new UserDaoJDBCImpl(new Util().getMyConnection());
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
+        userDao = new UserDaoJDBCImpl();
     }
 
     public void createUsersTable() {
@@ -26,22 +20,23 @@ public class UserServiceImpl implements UserService {
     }
 
     public void dropUsersTable() {
-
+        userDao.dropUsersTable();
     }
 
     public void saveUser(String name, String lastName, byte age) {
-
+        userDao.saveUser(name, lastName, age);
+        System.out.println(String.format("User с именем - %7s добавлен в базу данных", name));
     }
 
     public void removeUserById(long id) {
-
+        userDao.removeUserById(id);
     }
 
     public List<User> getAllUsers() {
-        return null;
+        return userDao.getAllUsers();
     }
 
     public void cleanUsersTable() {
-
+        userDao.cleanUsersTable();
     }
 }
