@@ -15,8 +15,8 @@ public class Util {
     private static final String userName = "root";
     private static final String password = "P@ssw0rd2016";
     private static final String connectionURL = String.format("jdbc:mysql://%s:3306/%s", hostName, dbName);
-    private static Connection connection;
 
+    private static Connection connection;
     private static SessionFactory sessionFactory;
 
     public static Connection getMyConnection() throws ClassNotFoundException, SQLException {
@@ -34,12 +34,11 @@ public class Util {
                     .setProperty("hibernate.connection.username", userName)
                     .setProperty("hibernate.connection.password", password)
                     .setProperty("hibernate.connection.pool_size", "1")
-                    .setProperty("hibernate.show_sql", "true")
+//                    .setProperty("hibernate.show_sql", "true")
                     .setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect")
                     .setProperty("hibernate.hbm2ddl.auto", "create");
             StandardServiceRegistryBuilder srb = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties());
             sessionFactory = configuration.buildSessionFactory(srb.build());
-          //  return sessionFactory;
         }
         return sessionFactory;
     }

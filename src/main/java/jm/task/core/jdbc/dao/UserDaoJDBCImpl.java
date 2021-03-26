@@ -43,7 +43,7 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public List<User> getAllUsers() {
-        final String sqlGetAllUsers = String.format("SELECT * FROM USERS");
+        final String sqlGetAllUsers = "SELECT * FROM USERS";
         List<User> list = new ArrayList<>();
         User user;
         try (Connection connection = Util.getMyConnection()) {

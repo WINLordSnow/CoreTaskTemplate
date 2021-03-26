@@ -15,12 +15,27 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void createUsersTable() {
-        new UserDaoJDBCImpl().createUsersTable();
+        final String sqlCreateTable = "CREATE TABLE IF NOT EXISTS USERS" +
+                "(" +
+                "    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY," +
+                "    name VARCHAR(20)," +
+                "    last_name VARCHAR(20)," +
+                "    age TINYINT" +
+                ");";
+        Session session = Util.getSessionFactory().openSession();
+        Transaction tx1 = session.beginTransaction();
+        session.createSQLQuery(sqlCreateTable).executeUpdate();
+        tx1.commit();
+        session.close();
     }
 
     @Override
     public void dropUsersTable() {
-        new UserDaoJDBCImpl().dropUsersTable();
+        Session session = Util.getSessionFactory().openSession();
+        Transaction tx1 = session.beginTransaction();
+        session.createSQLQuery("DROP TABLE IF EXISTS USERS;").executeUpdate();
+        tx1.commit();
+        session.close();
     }
 
     @Override
@@ -48,6 +63,7 @@ public class UserDaoHibernateImpl implements UserDao {
     @Override
     public List<User> getAllUsers() {
         Session session = Util.getSessionFactory().openSession();
+        //выдает предупреждение unchecked cast
         List<User> list = (List<User>) session.createQuery("FROM USERS").list();
         session.close();
         return list;
